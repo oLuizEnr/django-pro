@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from .forms import AddForm
 from .models import Contact
 from django.http import HttpResponseRedirect
@@ -40,3 +40,24 @@ def add(request):
             return render(request, 'mycontacts/add.html')
     else:
         return render(request, 'mycontacts/add.html')
+    
+def edit(request, id):
+    contact = get_object_or_404(Contact, id=id)
+    
+    if request.method == 'POST':
+        contact.name = request.POST.get("name")
+        contact.relation = request.POST.get('relation')
+        contact.phone = request.POST.get('phone')
+        contact.email = request.POST.get('email')
+        contact.save()
+                
+        contact_list = Contact.objects.all()
+        return render(request, 'mycontacts/show.html',{'contacts': contact_list}) 
+    else:   
+        return render(request, 'mycontacts/edit.html',{'contact': contact})
+    
+def delete(request, id):
+    contact = get_object_or_404(Contact, id=id)
+    contact.delete()
+
+    return redirect('/')
