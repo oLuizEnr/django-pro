@@ -61,3 +61,8 @@ def delete(request, id):
     contact.delete()
 
     return redirect('/')
+
+def details(request, id):
+    contact = get_object_or_404(Contact, id=id)
+
+    return render(request, 'mycontacts/details.html',{'contact': contact})
